@@ -1,1 +1,1 @@
-sample
+output value 2
