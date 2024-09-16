@@ -3,6 +3,11 @@
 # file = tipo do provider
 # exemplo = nome do recurso
 resource "local_file" "exemplo" {
-  content  = "sample content here"
   filename = "example.txt"
+  content  = var.content
+}
+
+variable "content" {
+  type    = string
+  default = "Hello World"
 }
