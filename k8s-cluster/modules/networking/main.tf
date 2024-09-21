@@ -1,5 +1,5 @@
-resource "aws_vpc" "new-vpc" {
-  cidr_block = "10.0.0.0/16"
+resource "aws_vpc" "main" {
+  cidr_block = var.cidr_block
 
   tags = {
     Name = "${var.prefix}-vpc"
@@ -11,7 +11,7 @@ data "aws_availability_zones" "available" {}
 resource "aws_subnet" "subnets" {
   count                   = 2
   availability_zone       = data.aws_availability_zones.available.names[count.index]
-  vpc_id                  = aws_vpc.new-vpc.id
+  vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.${count.index}.0/24"
   map_public_ip_on_launch = true
   tags = {
@@ -20,14 +20,14 @@ resource "aws_subnet" "subnets" {
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.new-vpc.id
+  vpc_id = aws_vpc.main.id
   tags = {
     Name = "${var.prefix}-igw"
   }
 }
 
 resource "aws_route_table" "rtb" {
-  vpc_id = aws_vpc.new-vpc.id
+  vpc_id = aws_vpc.main.id
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
